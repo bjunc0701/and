@@ -41,7 +41,8 @@ class MainActivity : AppCompatActivity() {
 
         listViewBusStops.setOnItemClickListener { parent, view, position, id ->
             val selectedBusStop = parent.getItemAtPosition(position) as String
-
+            val intent = Intent(this@MainActivity, BusStopInfoActivity::class.java)
+            intent.putExtra("selectedBusStop", selectedBusStop)
             startActivity(intent)
         }
     }
@@ -98,73 +99,6 @@ class MainActivity : AppCompatActivity() {
             } else {
                 val adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_list_item_1, result)
                 listViewBusStops.adapter = adapter
-            }
-        }
-    }
-
-    private inner class FetchBusRouteInfoTask : AsyncTask<String, Void, String>() {
-        override fun doInBackground(vararg params: String?): String {
-            val selectedBusStop = params[0]
-
-            val url = URL("http://192.168.1.2:12300/get_bus_info") // 서버 주소 입력
-            val connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = "POST"
-            connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8")
-            connection.setRequestProperty("Accept", "application/json")
-            connection.doOutput = true
-
-            try {
-                val outputStream = connection.outputStream
-                val body = JSONObject().apply {
-                    put("selected_index", 0)
-                    put("selected_node_id", selectedBusStop)
-                }.toString().toByteArray(Charsets.UTF_8)
-                outputStream.write(body)
-                outputStream.close()
-
-                val reader = BufferedReader(InputStreamReader(connection.inputStream))
-                val response = StringBuilder()
-                var line: String?
-                while (reader.readLine().also { line = it } != null) {
-                    response.append(line)
-                }
-                reader.close()
-                return response.toString()
-            } catch (e: Exception) {
-                Log.e("MainActivity", "Error", e)
-                return ""
-            } finally {
-                connection.disconnect()
-            }
-        }
-        override fun onPostExecute(result: String?) {
-            super.onPostExecute(result)
-            if (result.isNullOrEmpty()) {
-                textViewResult.text = "해당 정류장에 대한 버스 노선 정보가 없습니다."
-            } else {
-                parseAndDisplayResult(result)
-            }
-        }
-
-        private fun parseAndDisplayResult(result: String) {
-            try {
-                val jsonArray = JSONArray(result)
-                if (jsonArray.length() > 0) {
-                    val resultBuilder = StringBuilder()
-                    for (i in 0 until jsonArray.length()) {
-                        val jsonObject = jsonArray.getJSONObject(i)
-                        resultBuilder.append("노선번호: ${jsonObject.getString("routeno")}\n")
-                        resultBuilder.append("남은 정류장 수: ${jsonObject.optString("arrprevstationcnt", "정보 없음")}\n")
-                        resultBuilder.append("도착 예정 시간: ${jsonObject.optString("arrival_time", "정보 없음")}\n")
-                        resultBuilder.append("혼잡도: ${jsonObject.optString("congestion_level", "정보 없음")}\n\n")
-                    }
-                    textViewResult.text = resultBuilder.toString()
-                } else {
-                    textViewResult.text = "해당 정류장에 대한 버스 노선 정보가 없습니다."
-                }
-            } catch (e: Exception) {
-                Log.e("MainActivity", "Error", e)
-                textViewResult.text = "데이터를 파싱하는 동안 오류가 발생했습니다."
             }
         }
     }
