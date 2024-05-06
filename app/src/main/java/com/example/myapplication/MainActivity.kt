@@ -7,7 +7,6 @@ import android.widget.EditText
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.*
-import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -86,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getSelectedRouteInfo(routeId: String): JSONObject {
+    private fun getSelectedRouteInfo(routeno: String): JSONObject {
         val url = URL("http://192.168.55.195:12300/select_route")
         val connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = "POST"
@@ -94,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         connection.setRequestProperty("Accept", "application/json")
         connection.doOutput = true
 
-        val jsonInputString = "{\"route_id\": \"$routeId\",\"route_id\": \"$routeId\"}"
+        val jsonInputString = "{\"routeno\": \"$routeno\"}"
 
         connection.outputStream.use { outputStream ->
             outputStream.write(jsonInputString.toByteArray(Charsets.UTF_8))
@@ -116,13 +115,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private fun showRoutes(response: JSONObject) {
         val jsonArray = response.optJSONArray("routes")
         val routes = mutableListOf<String>()
         jsonArray?.let {
             for (i in 0 until it.length()) {
                 val item = it.getJSONObject(i)
-                routes.add(item.getString("routeid"))
+                routes.add(item.getString("routeno"))
             }
         }
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, routes)
