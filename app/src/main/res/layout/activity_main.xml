@@ -1,37 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
 
     <EditText
-        android:id="@+id/editTextBusNumber"
+        android:id="@+id/busNumberInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Bus Number"
-        android:inputType="number"
-        android:layout_margin="16dp"/>
+        android:hint="Enter bus number"
+        android:layout_margin="16dp"
+        android:inputType="number"/>
 
     <Button
-        android:id="@+id/buttonGetRoute"
+        android:id="@+id/searchButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Get Route"
-        android:layout_below="@id/editTextBusNumber"
+        android:layout_below="@id/busNumberInput"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"/>
+        android:text="Search"
+        android:layout_marginTop="8dp"/>
 
-    <ScrollView
+    <ListView
+        android:id="@+id/resultText"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/buttonGetRoute"
-        android:layout_marginTop="16dp">
-
-        <TextView
-            android:id="@+id/textViewRouteInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Bus Route Info"
-            android:textSize="16sp"/>
-    </ScrollView>
+        android:layout_below="@id/searchButton"
+        android:layout_marginTop="16dp"/>
 
 </RelativeLayout>
