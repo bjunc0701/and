@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
         if (connection.responseCode == HttpURLConnection.HTTP_OK) {
             val response = StringBuilder()
-            BufferedReader(InputStreamReader(connection.inputStream, "utf-8")).use { br ->
+            BufferedReader(InputStreamReader(connection.inputStream, "utf-8")).use { br->
                 var responseLine: String?
                 while (br.readLine().also { responseLine = it } != null) {
                     response.append(responseLine!!.trim())
@@ -90,12 +90,14 @@ class MainActivity : AppCompatActivity() {
             val selectedRouteNo = routes[position] // 선택된 노선 번호
             CoroutineScope(Dispatchers.IO).launch {
                 val response = getBusStopInfo(selectedRouteId) // 노선 ID로 정류소 정보 가져오기
-                val jsonArray = response.optJSONArray("nodenm")
+                val jsonArray = response.optJSONArray("nodenm_and_vehicle")
                 val busStops = mutableListOf<String>()
                 jsonArray?.let {
                     for (i in 0 until it.length()) {
-                        val stop = it.getString(i)
-                        busStops.add(stop)
+                        val stop = it.getJSONObject(i)
+                        val nodenm = stop.getString("nodenm")
+                        val vehicleNo = stop.getString("vehicleno")
+                        busStops.add("$nodenm $vehicleNo")
                     }
                 }
                 withContext(Dispatchers.Main) {
