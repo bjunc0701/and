@@ -1,37 +1,63 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- activity_main.xml -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".MainActivity">
 
-    <EditText
-        android:id="@+id/busNumberInput"
+    <TextView
+        android:id="@+id/textView_departure"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Bus Number"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:inputType="text" />
+        android:text="Departure Station:"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/searchButton"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/editText_departure"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/busNumberInput"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
-        android:text="Search" />
+        android:hint="Enter departure station" />
 
     <ListView
-        android:id="@+id/resultText"
+        android:id="@+id/listView_departure_results"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/searchButton"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp" />
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        android:scrollbars="vertical" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/textView_destination"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Destination Station:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+
+    <EditText
+        android:id="@+id/editText_destination"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter destination station" />
+
+    <ListView
+        android:id="@+id/listView_destination_results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        android:scrollbars="vertical" />
+
+    <Button
+        android:id="@+id/button_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout>
