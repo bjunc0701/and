@@ -21,8 +21,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var editTextDestination: EditText
     private lateinit var listViewDepartureResults: ListView
     private lateinit var listViewDestinationResults: ListView
+    private lateinit var listViewBusRoutes: ListView
     private lateinit var adapterDeparture: ArrayAdapter<String>
     private lateinit var adapterDestination: ArrayAdapter<String>
+    private lateinit var adapterBusRoutes: ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,12 +34,15 @@ class MainActivity : AppCompatActivity() {
         editTextDestination = findViewById(R.id.editText_destination)
         listViewDepartureResults = findViewById(R.id.listView_departure_results)
         listViewDestinationResults = findViewById(R.id.listView_destination_results)
+        listViewBusRoutes = findViewById(R.id.listView_bus_routes)
         val buttonSearch: Button = findViewById(R.id.button_search)
 
         adapterDeparture = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
         adapterDestination = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
+        adapterBusRoutes = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
         listViewDepartureResults.adapter = adapterDeparture
         listViewDestinationResults.adapter = adapterDestination
+        listViewBusRoutes.adapter = adapterBusRoutes
 
         editTextDeparture.addTextChangedListener {
             val departureNode = editTextDeparture.text.toString()
@@ -237,9 +242,10 @@ class MainActivity : AppCompatActivity() {
             val directRoutes = jsonResponse.optJSONArray("direct_routes")
             val commonStations = jsonResponse.optJSONArray("common_stations")
 
+            val busRoutesArray = ArrayList<String>()
+
             // Process direct routes
             if (directRoutes != null) {
-                val directRoutesArray = ArrayList<String>()
                 for (i in 0 until directRoutes.length()) {
                     val route = directRoutes.getJSONObject(i)
                     val busNumber = route.getString("bus_number")
@@ -251,20 +257,12 @@ class MainActivity : AppCompatActivity() {
                     val routeInfo =
                         "Bus $busNumber: From $departureStation to $destinationStation\n" +
                                 "Total Distance: $totalDistance km, Total Time: $totalTime min"
-                    directRoutesArray.add(routeInfo)
-                }
-                // Update UI with direct routes
-                // For example, set the adapter for a ListView
-                runOnUiThread {
-                    adapterDeparture.clear()
-                    adapterDeparture.addAll(directRoutesArray)
-                    adapterDeparture.notifyDataSetChanged()
+                    busRoutesArray.add(routeInfo)
                 }
             }
 
             // Process common stations
             if (commonStations != null) {
-                val commonStationsArray = ArrayList<String>()
                 for (i in 0 until commonStations.length()) {
                     val station = commonStations.getJSONObject(i)
                     val stationName = station.getString("station")
@@ -282,15 +280,16 @@ class MainActivity : AppCompatActivity() {
                             "Distance from Departure: $distanceDepartureToCommon km\n" +
                             "Distance to Destination: $distanceCommonToDestination km\n" +
                             "Total Distance: $totalDistance km, Total Time: $totalTime min"
-                    commonStationsArray.add(stationInfo)
+                    busRoutesArray.add(stationInfo)
                 }
-                // Update UI with common stations
-                // For example, set the adapter for a ListView
-                runOnUiThread {
-                    adapterDestination.clear()
-                    adapterDestination.addAll(commonStationsArray)
-                    adapterDestination.notifyDataSetChanged()
-                }
+            }
+
+            // Update UI with bus routes
+            runOnUiThread {
+                adapterBusRoutes.clear()
+                adapterBusRoutes.addAll(busRoutesArray)
+                adapterBusRoutes.notifyDataSetChanged()
+                listViewBusRoutes.visibility = ListView.VISIBLE
             }
         }
     }
