@@ -47,23 +47,17 @@ class MainActivity : AppCompatActivity() {
         editTextDeparture.addTextChangedListener {
             val departureNode = editTextDeparture.text.toString()
             GetDepartureStationInfoTask().execute(departureNode)
-            listViewDepartureResults.visibility = ListView.VISIBLE
-            listViewDestinationResults.visibility = ListView.GONE
         }
 
         editTextDestination.addTextChangedListener {
             val destinationNode = editTextDestination.text.toString()
             GetDestinationStationInfoTask().execute(destinationNode)
-            listViewDepartureResults.visibility = ListView.GONE
-            listViewDestinationResults.visibility = ListView.VISIBLE
         }
 
         buttonSearch.setOnClickListener {
             val departureNode = editTextDeparture.text.toString()
             val destinationNode = editTextDestination.text.toString()
             GetBusRouteInfoTask().execute(departureNode, destinationNode)
-            listViewDepartureResults.visibility = ListView.GONE
-            listViewDestinationResults.visibility = ListView.GONE
         }
 
         listViewDepartureResults.setOnItemClickListener { _, _, position, _ ->
@@ -130,6 +124,11 @@ class MainActivity : AppCompatActivity() {
             adapterDeparture.clear()
             if (result != null) {
                 adapterDeparture.addAll(result)
+                if (result.size > 1) {
+                    listViewDepartureResults.visibility = ListView.VISIBLE
+                } else {
+                    listViewDepartureResults.visibility = ListView.GONE
+                }
             }
         }
     }
@@ -185,6 +184,11 @@ class MainActivity : AppCompatActivity() {
             adapterDestination.clear()
             if (result != null) {
                 adapterDestination.addAll(result)
+                if (result.size > 1) {
+                    listViewDestinationResults.visibility = ListView.VISIBLE
+                } else {
+                    listViewDestinationResults.visibility = ListView.GONE
+                }
             }
         }
     }
@@ -249,14 +253,13 @@ class MainActivity : AppCompatActivity() {
                 for (i in 0 until directRoutes.length()) {
                     val route = directRoutes.getJSONObject(i)
                     val busNumber = route.getString("bus_number")
-                    val departureStation = route.getString("departure_station")
-                    val destinationStation = route.getString("destination_station")
+//                    val departureStation = route.getString("departure_station")
+//                    val destinationStation = route.getString("destination_station")
                     val totalDistance = route.getDouble("total_distance")
-                    val totalTime = route.getDouble("total_time")
+                    val totalTime = route.getString("total_time")
 
-                    val routeInfo =
-                        "Bus $busNumber: From $departureStation to $destinationStation\n" +
-                                "Total Distance: $totalDistance km, Total Time: $totalTime min"
+                    val routeInfo ="버스 $busNumber\n" +
+                                "총 거리: $totalDistance km\n 소요에정시간: $totalTime"
                     busRoutesArray.add(routeInfo)
                 }
             }
@@ -273,13 +276,14 @@ class MainActivity : AppCompatActivity() {
                     val distanceCommonToDestination =
                         station.getDouble("distance_common_to_destination")
                     val totalDistance = station.getDouble("total_distance")
-                    val totalTime = station.getDouble("total_time")
+                    val totalTime = station.getString("total_time")
 
-                    val stationInfo = "Common Station: $stationName\n" +
-                            "Departure Bus: $departureBus, Destination Bus: $destinationBus\n" +
-                            "Distance from Departure: $distanceDepartureToCommon km\n" +
-                            "Distance to Destination: $distanceCommonToDestination km\n" +
-                            "Total Distance: $totalDistance km, Total Time: $totalTime min"
+                    val stationInfo = "환승정류장: $stationName\n" +
+                            "출발정류장 버스: $departureBus\n 환승버스:$destinationBus\n" +
+//                            "Distance from Departure: $distanceDepartureToCommon km\n" +
+//                            "Distance to Destination: $distanceCommonToDestination km\n" +
+                            "총거리: $totalDistance km\n 소요예정시간:$totalTime"
+
                     busRoutesArray.add(stationInfo)
                 }
             }
@@ -294,3 +298,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+

@@ -9,41 +9,57 @@
         android:id="@+id/editText_departure"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter departure station" />
+        android:hint="출발 정류장을 입력하세요"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_alignParentTop="true"
+        android:inputType="text"/>
 
     <ListView
         android:id="@+id/listView_departure_results"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_below="@id/editText_departure"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <EditText
         android:id="@+id/editText_destination"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter destination station"
-        android:layout_below="@id/listView_departure_results" />
+        android:hint="도착 정류장을 입력하세요"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_below="@id/listView_departure_results"
+        android:inputType="text"/>
 
     <ListView
         android:id="@+id/listView_destination_results"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_below="@id/editText_destination"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/button_search"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search Routes"
-        android:layout_below="@id/listView_destination_results" />
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/listView_destination_results"
+        android:layout_centerHorizontal="true"
+        android:text="검색"/>
 
     <ListView
         android:id="@+id/listView_bus_routes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:layout_below="@id/button_search"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
 </RelativeLayout>
