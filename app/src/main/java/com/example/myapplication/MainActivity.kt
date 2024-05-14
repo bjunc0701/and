@@ -38,7 +38,8 @@ class MainActivity : AppCompatActivity() {
         val buttonSearch: Button = findViewById(R.id.button_search)
 
         adapterDeparture = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
-        adapterDestination = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
+        adapterDestination =
+            ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
         adapterBusRoutes = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
         listViewDepartureResults.adapter = adapterDeparture
         listViewDestinationResults.adapter = adapterDestination
@@ -244,7 +245,7 @@ class MainActivity : AppCompatActivity() {
 
         private fun handleBusRouteInfoResponse(jsonResponse: JSONObject) {
             val directRoutes = jsonResponse.optJSONArray("direct_routes")
-            val commonStations = jsonResponse.optJSONArray("common_stations")
+            val commonStations = jsonResponse.optJSONObject("common_stations")
 
             val busRoutesArray = ArrayList<String>()
 
@@ -253,38 +254,32 @@ class MainActivity : AppCompatActivity() {
                 for (i in 0 until directRoutes.length()) {
                     val route = directRoutes.getJSONObject(i)
                     val busNumber = route.getString("bus_number")
-//                    val departureStation = route.getString("departure_station")
-//                    val destinationStation = route.getString("destination_station")
                     val totalDistance = route.getDouble("total_distance")
                     val totalTime = route.getString("total_time")
 
-                    val routeInfo ="버스 $busNumber\n" +
-                                "총 거리: $totalDistance km\n 소요에정시간: $totalTime"
+                    val routeInfo = "버스 $busNumber\n" +
+                            "총 거리: $totalDistance km\n소요예정시간: $totalTime"
                     busRoutesArray.add(routeInfo)
                 }
             }
 
             // Process common stations
             if (commonStations != null) {
-                for (i in 0 until commonStations.length()) {
-                    val station = commonStations.getJSONObject(i)
-                    val stationName = station.getString("station")
-                    val departureBus = station.getString("departure_bus")
-                    val destinationBus = station.getString("destination_bus")
-                    val distanceDepartureToCommon =
-                        station.getDouble("distance_departure_to_common")
-                    val distanceCommonToDestination =
-                        station.getDouble("distance_common_to_destination")
-                    val totalDistance = station.getDouble("total_distance")
-                    val totalTime = station.getString("total_time")
+                commonStations.keys().forEach { departureBus ->
+                    val routes = commonStations.getJSONArray(departureBus)
+                    for (i in 0 until routes.length()) {
+                        val station = routes.getJSONObject(i)
+                        val stationName = station.getString("station")
+                        val destinationBus = station.getString("destination_bus")
+                        val totalDistance = station.getDouble("total_distance")
+                        val totalTime = station.getString("total_time")
 
-                    val stationInfo = "환승정류장: $stationName\n" +
-                            "출발정류장 버스: $departureBus\n 환승버스:$destinationBus\n" +
-//                            "Distance from Departure: $distanceDepartureToCommon km\n" +
-//                            "Distance to Destination: $distanceCommonToDestination km\n" +
-                            "총거리: $totalDistance km\n 소요예정시간:$totalTime"
+                        val stationInfo = "환승정류장: $stationName\n" +
+                                "출발 버스: $departureBus\n환승 버스: $destinationBus\n" +
+                                "총 거리: $totalDistance km\n소요예정시간: $totalTime"
 
-                    busRoutesArray.add(stationInfo)
+                        busRoutesArray.add(stationInfo)
+                    }
                 }
             }
 
@@ -298,4 +293,5 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
 
