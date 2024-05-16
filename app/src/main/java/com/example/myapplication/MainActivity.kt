@@ -17,68 +17,67 @@ import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var editTextDeparture: EditText
-    private lateinit var editTextDestination: EditText
-    private lateinit var listViewDepartureResults: ListView
-    private lateinit var listViewDestinationResults: ListView
+    private lateinit var editTextStartStation: EditText
+    private lateinit var editTextEndStation: EditText
+    private lateinit var listViewStartResults: ListView
+    private lateinit var listViewEndResults: ListView
     private lateinit var listViewBusRoutes: ListView
-    private lateinit var adapterDeparture: ArrayAdapter<String>
-    private lateinit var adapterDestination: ArrayAdapter<String>
+    private lateinit var adapterStart: ArrayAdapter<String>
+    private lateinit var adapterEnd: ArrayAdapter<String>
     private lateinit var adapterBusRoutes: ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        editTextDeparture = findViewById(R.id.editText_departure)
-        editTextDestination = findViewById(R.id.editText_destination)
-        listViewDepartureResults = findViewById(R.id.listView_departure_results)
-        listViewDestinationResults = findViewById(R.id.listView_destination_results)
+        editTextStartStation = findViewById(R.id.editText_departure)
+        editTextEndStation = findViewById(R.id.editText_destination)
+        listViewStartResults = findViewById(R.id.listView_departure_results)
+        listViewEndResults = findViewById(R.id.listView_destination_results)
         listViewBusRoutes = findViewById(R.id.listView_bus_routes)
         val buttonSearch: Button = findViewById(R.id.button_search)
 
-        adapterDeparture = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
-        adapterDestination =
-            ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
+        adapterStart = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
+        adapterEnd = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
         adapterBusRoutes = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
-        listViewDepartureResults.adapter = adapterDeparture
-        listViewDestinationResults.adapter = adapterDestination
+        listViewStartResults.adapter = adapterStart
+        listViewEndResults.adapter = adapterEnd
         listViewBusRoutes.adapter = adapterBusRoutes
 
-        editTextDeparture.addTextChangedListener {
-            val departureNode = editTextDeparture.text.toString()
-            GetDepartureStationInfoTask().execute(departureNode)
+        editTextStartStation.addTextChangedListener {
+            val startNode = editTextStartStation.text.toString()
+            GetStartStationInfoTask().execute(startNode)
         }
 
-        editTextDestination.addTextChangedListener {
-            val destinationNode = editTextDestination.text.toString()
-            GetDestinationStationInfoTask().execute(destinationNode)
+        editTextEndStation.addTextChangedListener {
+            val endNode = editTextEndStation.text.toString()
+            GetEndStationInfoTask().execute(endNode)
         }
 
         buttonSearch.setOnClickListener {
-            val departureNode = editTextDeparture.text.toString()
-            val destinationNode = editTextDestination.text.toString()
-            GetBusRouteInfoTask().execute(departureNode, destinationNode)
+            val startNode = editTextStartStation.text.toString()
+            val endNode = editTextEndStation.text.toString()
+            GetBusRouteInfoTask().execute(startNode, endNode)
         }
 
-        listViewDepartureResults.setOnItemClickListener { _, _, position, _ ->
-            val selectedStation = adapterDeparture.getItem(position)
-            editTextDeparture.setText(selectedStation)
-            listViewDepartureResults.visibility = ListView.GONE
+        listViewStartResults.setOnItemClickListener { _, _, position, _ ->
+            val selectedStation = adapterStart.getItem(position)
+            editTextStartStation.setText(selectedStation)
+            listViewStartResults.visibility = ListView.GONE
         }
 
-        listViewDestinationResults.setOnItemClickListener { _, _, position, _ ->
-            val selectedStation = adapterDestination.getItem(position)
-            editTextDestination.setText(selectedStation)
-            listViewDestinationResults.visibility = ListView.GONE
+        listViewEndResults.setOnItemClickListener { _, _, position, _ ->
+            val selectedStation = adapterEnd.getItem(position)
+            editTextEndStation.setText(selectedStation)
+            listViewEndResults.visibility = ListView.GONE
         }
     }
 
-    private inner class GetDepartureStationInfoTask : AsyncTask<String, Void, List<String>?>() {
+    private inner class GetStartStationInfoTask : AsyncTask<String, Void, List<String>?>() {
 
         override fun doInBackground(vararg params: String?): List<String>? {
-            val departureNode = params[0] ?: return null
-            val url = URL("http://192.168.1.2:12300/departure_station_info")
+            val startNode = params[0] ?: return null
+            val url = URL("http://192.168.1.2:12300/start_station_info")
 
             try {
                 val connection = url.openConnection() as HttpURLConnection
@@ -86,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                 connection.setRequestProperty("Content-Type", "application/json")
                 connection.doOutput = true
 
-                val postData = "{\"departure_node\":\"$departureNode\"}"
+                val postData = "{\"start_station\":\"$startNode\"}"
                 val postDataBytes = postData.toByteArray(Charsets.UTF_8)
 
                 val outputStream = connection.outputStream
@@ -122,23 +121,23 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPostExecute(result: List<String>?) {
             super.onPostExecute(result)
-            adapterDeparture.clear()
+            adapterStart.clear()
             if (result != null) {
-                adapterDeparture.addAll(result)
+                adapterStart.addAll(result)
                 if (result.size > 1) {
-                    listViewDepartureResults.visibility = ListView.VISIBLE
+                    listViewStartResults.visibility = ListView.VISIBLE
                 } else {
-                    listViewDepartureResults.visibility = ListView.GONE
+                    listViewStartResults.visibility = ListView.GONE
                 }
             }
         }
     }
 
-    private inner class GetDestinationStationInfoTask : AsyncTask<String, Void, List<String>?>() {
+    private inner class GetEndStationInfoTask : AsyncTask<String, Void, List<String>?>() {
 
         override fun doInBackground(vararg params: String?): List<String>? {
-            val destinationNode = params[0] ?: return null
-            val url = URL("http://192.168.1.2:12300/destination_station_info")
+            val endNode = params[0] ?: return null
+            val url = URL("http://192.168.1.2:12300/end_station_info")
 
             try {
                 val connection = url.openConnection() as HttpURLConnection
@@ -146,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                 connection.setRequestProperty("Content-Type", "application/json")
                 connection.doOutput = true
 
-                val postData = "{\"destination_node\":\"$destinationNode\"}"
+                val postData = "{\"end_station\":\"$endNode\"}"
                 val postDataBytes = postData.toByteArray(Charsets.UTF_8)
 
                 val outputStream = connection.outputStream
@@ -182,13 +181,13 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPostExecute(result: List<String>?) {
             super.onPostExecute(result)
-            adapterDestination.clear()
+            adapterEnd.clear()
             if (result != null) {
-                adapterDestination.addAll(result)
+                adapterEnd.addAll(result)
                 if (result.size > 1) {
-                    listViewDestinationResults.visibility = ListView.VISIBLE
+                    listViewEndResults.visibility = ListView.VISIBLE
                 } else {
-                    listViewDestinationResults.visibility = ListView.GONE
+                    listViewEndResults.visibility = ListView.GONE
                 }
             }
         }
@@ -197,9 +196,9 @@ class MainActivity : AppCompatActivity() {
     private inner class GetBusRouteInfoTask : AsyncTask<String, Void, JSONObject?>() {
 
         override fun doInBackground(vararg params: String?): JSONObject? {
-            val departureNode = params[0] ?: return null
-            val destinationNode = params[1] ?: return null
-            val url = URL("http://192.168.1.2:12300/bus_route_info")
+            val startNode = params[0] ?: return null
+            val endNode = params[1] ?: return null
+            val url = URL("http://192.168.1.2:12300/route_info")
 
             try {
                 val connection = url.openConnection() as HttpURLConnection
@@ -207,8 +206,7 @@ class MainActivity : AppCompatActivity() {
                 connection.setRequestProperty("Content-Type", "application/json")
                 connection.doOutput = true
 
-                val postData =
-                    "{\"departure_node\":\"$departureNode\", \"destination_node\":\"$destinationNode\"}"
+                val postData = "{\"start_station\":\"$startNode\", \"end_station\":\"$endNode\"}"
                 val postDataBytes = postData.toByteArray(Charsets.UTF_8)
 
                 val outputStream = connection.outputStream
@@ -245,7 +243,7 @@ class MainActivity : AppCompatActivity() {
 
         private fun handleBusRouteInfoResponse(jsonResponse: JSONObject) {
             val directRoutes = jsonResponse.optJSONArray("direct_routes")
-            val commonStations = jsonResponse.optJSONObject("common_stations")
+            val intermediateStations = jsonResponse.optJSONObject("intermediate_stations")
 
             val busRoutesArray = ArrayList<String>()
 
@@ -263,19 +261,19 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            // Process common stations
-            if (commonStations != null) {
-                commonStations.keys().forEach { departureBus ->
-                    val routes = commonStations.getJSONArray(departureBus)
+            // Process intermediate stations
+            if (intermediateStations != null) {
+                intermediateStations.keys().forEach { startBus ->
+                    val routes = intermediateStations.getJSONArray(startBus)
                     for (i in 0 until routes.length()) {
                         val station = routes.getJSONObject(i)
                         val stationName = station.getString("station")
-                        val destinationBus = station.getString("destination_bus")
+                        val endBus = station.getString("end_bus")
                         val totalDistance = station.getDouble("total_distance")
                         val totalTime = station.getString("total_time")
 
                         val stationInfo = "환승정류장: $stationName\n" +
-                                "출발 버스: $departureBus\n환승 버스: $destinationBus\n" +
+                                "출발 버스: $startBus\n환승 버스: $endBus\n" +
                                 "총 거리: $totalDistance km\n소요예정시간: $totalTime"
 
                         busRoutesArray.add(stationInfo)
@@ -293,5 +291,3 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-
-
