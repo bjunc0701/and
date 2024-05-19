@@ -252,12 +252,14 @@ class MainActivity : AppCompatActivity() {
                 for (i in 0 until directRoutes.length()) {
                     val route = directRoutes.getJSONObject(i)
                     val busNumber = route.getString("bus_number")
-                    val routeType = route.getString("route_type") // Added routeType
+                    val routeType = route.getString("route_type")
+                    val routeTp = route.getString("route_tp") // Added routeTp
                     val totalDistance = route.getDouble("total_distance")
                     val totalTime = route.getString("total_time")
 
                     val routeInfo = "버스 $busNumber\n" +
-                            "노선 유형: $routeType\n" +  // Display routeType
+                            "노선 유형: $routeType\n" +
+                            "노선 타입: $routeTp\n" +  // Display routeTp
                             "총 거리: $totalDistance km\n소요예정시간: $totalTime"
                     busRoutesArray.add(routeInfo)
                 }
@@ -271,11 +273,15 @@ class MainActivity : AppCompatActivity() {
                         val station = routes.getJSONObject(i)
                         val stationName = station.getString("station")
                         val endBus = station.getString("end_bus")
+                        val startRouteType =
+                            station.getString("start_route_type") // Added startRouteType
+                        val endRouteType = station.getString("end_route_type") // Added endRouteType
                         val totalDistance = station.getDouble("total_distance")
                         val totalTime = station.getString("total_time")
 
                         val stationInfo = "환승정류장: $stationName\n" +
-                                "출발 버스: $startBus\n환승 버스: $endBus\n" +
+                                "출발 버스: $startBus (노선 유형: $startRouteType)\n" +
+                                "환승 버스: $endBus (노선 유형: $endRouteType)\n" +
                                 "총 거리: $totalDistance km\n소요예정시간: $totalTime"
 
                         busRoutesArray.add(stationInfo)
