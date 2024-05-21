@@ -1,3 +1,4 @@
+// MainActivity.kt
 package com.example.myapplication
 
 import android.os.AsyncTask
@@ -24,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var listViewBusRoutes: ListView
     private lateinit var adapterStart: ArrayAdapter<String>
     private lateinit var adapterEnd: ArrayAdapter<String>
-    private lateinit var adapterBusRoutes: ArrayAdapter<String>
+    private lateinit var busRouteAdapter: CustomBusRouteAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +40,10 @@ class MainActivity : AppCompatActivity() {
 
         adapterStart = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
         adapterEnd = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
-        adapterBusRoutes = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
+        busRouteAdapter = CustomBusRouteAdapter(this, mutableListOf())
         listViewStartResults.adapter = adapterStart
         listViewEndResults.adapter = adapterEnd
-        listViewBusRoutes.adapter = adapterBusRoutes
+        listViewBusRoutes.adapter = busRouteAdapter
 
         editTextStartStation.addTextChangedListener {
             val startNode = editTextStartStation.text.toString()
@@ -245,7 +246,7 @@ class MainActivity : AppCompatActivity() {
             val directRoutes = jsonResponse.optJSONArray("direct_routes")
             val intermediateStations = jsonResponse.optJSONObject("intermediate_stations")
 
-            val busRoutesArray = ArrayList<String>()
+            val busRoutesList = mutableListOf<BusRoute>()
 
             // Process direct routes
             if (directRoutes != null) {
@@ -253,15 +254,14 @@ class MainActivity : AppCompatActivity() {
                     val route = directRoutes.getJSONObject(i)
                     val busNumber = route.getString("bus_number")
                     val routeType = route.getString("route_type")
-                    val routeTp = route.getString("route_tp") // Added routeTp
                     val totalDistance = route.getDouble("total_distance")
                     val totalTime = route.getString("total_time")
 
                     val routeInfo = "버스 $busNumber\n" +
                             "노선 유형: $routeType\n" +
-                            "노선 타입: $routeTp\n" +  // Display routeTp
-                            "총 거리: $totalDistance km\n소요예정시간: $totalTime"
-                    busRoutesArray.add(routeInfo)
+                            "총 거리: $totalDistance km"
+
+                    busRoutesList.add(BusRoute(routeInfo, totalTime))
                 }
             }
 
@@ -273,8 +273,7 @@ class MainActivity : AppCompatActivity() {
                         val station = routes.getJSONObject(i)
                         val stationName = station.getString("station")
                         val endBus = station.getString("end_bus")
-                        val startRouteType =
-                            station.getString("start_route_type") // Added startRouteType
+                        val startRouteType = station.getString("start_route_type") // Added startRouteType
                         val endRouteType = station.getString("end_route_type") // Added endRouteType
                         val totalDistance = station.getDouble("total_distance")
                         val totalTime = station.getString("total_time")
@@ -282,21 +281,20 @@ class MainActivity : AppCompatActivity() {
                         val stationInfo = "환승정류장: $stationName\n" +
                                 "출발 버스: $startBus (노선 유형: $startRouteType)\n" +
                                 "환승 버스: $endBus (노선 유형: $endRouteType)\n" +
-                                "총 거리: $totalDistance km\n소요예정시간: $totalTime"
+                                "총 거리: $totalDistance km"
 
-                        busRoutesArray.add(stationInfo)
+                        busRoutesList.add(BusRoute(stationInfo, totalTime))
                     }
                 }
             }
 
             // Update UI with bus routes
             runOnUiThread {
-                adapterBusRoutes.clear()
-                adapterBusRoutes.addAll(busRoutesArray)
-                adapterBusRoutes.notifyDataSetChanged()
+                busRouteAdapter.clear()
+                busRouteAdapter.addAll(busRoutesList)
+                busRouteAdapter.notifyDataSetChanged()
                 listViewBusRoutes.visibility = ListView.VISIBLE
             }
         }
     }
 }
-
