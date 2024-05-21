@@ -246,7 +246,7 @@ class MainActivity : AppCompatActivity() {
             val directRoutes = jsonResponse.optJSONArray("direct_routes")
             val intermediateStations = jsonResponse.optJSONObject("intermediate_stations")
 
-            val busRoutesList = mutableListOf<BusRoute>()
+            val busRoutesList = mutableListOf<CustomBusRouteAdapter.BusRoute>()
 
             // Process direct routes
             if (directRoutes != null) {
@@ -254,14 +254,16 @@ class MainActivity : AppCompatActivity() {
                     val route = directRoutes.getJSONObject(i)
                     val busNumber = route.getString("bus_number")
                     val routeType = route.getString("route_type")
+
                     val totalDistance = route.getDouble("total_distance")
                     val totalTime = route.getString("total_time")
 
                     val routeInfo = "버스 $busNumber\n" +
                             "노선 유형: $routeType\n" +
+
                             "총 거리: $totalDistance km"
 
-                    busRoutesList.add(BusRoute(routeInfo, totalTime))
+                    busRoutesList.add(CustomBusRouteAdapter.BusRoute(routeInfo, totalTime))
                 }
             }
 
@@ -283,7 +285,7 @@ class MainActivity : AppCompatActivity() {
                                 "환승 버스: $endBus (노선 유형: $endRouteType)\n" +
                                 "총 거리: $totalDistance km"
 
-                        busRoutesList.add(BusRoute(stationInfo, totalTime))
+                        busRoutesList.add(CustomBusRouteAdapter.BusRoute(stationInfo, totalTime))
                     }
                 }
             }
