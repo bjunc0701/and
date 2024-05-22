@@ -28,9 +28,9 @@ class CustomBusRouteAdapter(context: Context, busRoutes: List<BusRoute>) :
             totalTimeTextView.text = busRoute.totalTime
             totalTimeTextView.setTextColor(Color.WHITE) // 텍스트 색상 흰색으로 설정
             if (busRoute.routeType == "간선버스") {
-                totalTimeTextView.setBackgroundColor(Color.BLUE)
+                totalTimeTextView.setBackgroundResource(R.drawable.blue_background)
             } else {
-                totalTimeTextView.setBackgroundColor(Color.RED)
+                totalTimeTextView.setBackgroundResource(R.drawable.red_background)
             }
         }
         return view
