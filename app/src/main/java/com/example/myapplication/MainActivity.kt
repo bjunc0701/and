@@ -2,6 +2,7 @@ package com.example.myapplication
 
 import android.os.AsyncTask
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -245,7 +246,7 @@ class MainActivity : AppCompatActivity() {
             val directRoutes = jsonResponse.optJSONArray("direct_routes")
             val intermediateStations = jsonResponse.optJSONObject("intermediate_stations")
 
-            val busRoutesList = mutableListOf<CustomBusRouteAdapter.BusRoute>()
+            val busRoutesList = mutableListOf<Any>()
 
             // Process direct routes
             if (directRoutes != null) {
@@ -253,15 +254,14 @@ class MainActivity : AppCompatActivity() {
                     val route = directRoutes.getJSONObject(i)
                     val busNumber = route.getString("bus_number")
                     val routeType = route.getString("route_type")
-
                     val totalDistance = route.getDouble("total_distance")
                     val totalTime = route.getString("total_time")
 
-                    val routeInfo = "버스 $busNumber\n" +
-                            "노선 유형: $routeType\n" +
+                    val routeInfo = "버스번호: $busNumber\n"
+//                            "노선 유형: $routeType\n" +
                             "총 거리: $totalDistance km"
 
-                    busRoutesList.add(CustomBusRouteAdapter.BusRoute(routeInfo, totalTime, routeType))
+                    busRoutesList.add(CustomBusRouteAdapter.DirectBusRoute(routeInfo, totalTime, routeType))
                 }
             }
 
@@ -278,12 +278,15 @@ class MainActivity : AppCompatActivity() {
                         val totalDistance = station.getDouble("total_distance")
                         val totalTime = station.getString("total_time")
 
-                        val stationInfo = "환승정류장: $stationName\n" +
-                                "출발 버스: $startBus (노선 유형: $startRouteType)\n" +
-                                "환승 버스: $endBus (노선 유형: $endRouteType)\n" +
-                                "총 거리: $totalDistance km"
+                        val stationInfo =
+                                "출발 버스: $startBus\n"+
+                                "환승정류장: $stationName\n"+
+                                "환승 버스: $endBus\n"
+//                        "출발 버스: $startBus (노선 유형: $startRouteType)\n" +
+//                                "환승 버스: $endBus (노선 유형: $endRouteType)\n"
+//                                "총 거리: $totalDistance km"
 
-                        busRoutesList.add(CustomBusRouteAdapter.BusRoute(stationInfo, totalTime, startRouteType))
+                        busRoutesList.add(CustomBusRouteAdapter.TransferBusRoute(stationInfo, totalTime, startRouteType, endRouteType))
                     }
                 }
             }
@@ -293,8 +296,9 @@ class MainActivity : AppCompatActivity() {
                 busRouteAdapter.clear()
                 busRouteAdapter.addAll(busRoutesList)
                 busRouteAdapter.notifyDataSetChanged()
-                listViewBusRoutes.visibility = ListView.VISIBLE
+                listViewBusRoutes.visibility = View.VISIBLE
             }
         }
     }
 }
+
