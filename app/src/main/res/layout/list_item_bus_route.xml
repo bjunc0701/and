@@ -9,16 +9,17 @@
         android:id="@+id/text_view_route_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#000000"
+        android:text="Route Info"
         android:textSize="16sp" />
 
     <TextView
         android:id="@+id/text_view_total_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/red_background"
+        android:text="Total Time"
+        android:textSize="14sp"
         android:padding="4dp"
         android:textColor="#FFFFFF"
-        android:textSize="14sp" />
+        android:background="#FFFFFF" /> <!-- Default background color, will be changed in code -->
 
 </LinearLayout>

@@ -1,4 +1,3 @@
-// MainActivity.kt
 package com.example.myapplication
 
 import android.os.AsyncTask
@@ -260,10 +259,9 @@ class MainActivity : AppCompatActivity() {
 
                     val routeInfo = "버스 $busNumber\n" +
                             "노선 유형: $routeType\n" +
-
                             "총 거리: $totalDistance km"
 
-                    busRoutesList.add(CustomBusRouteAdapter.BusRoute(routeInfo, totalTime))
+                    busRoutesList.add(CustomBusRouteAdapter.BusRoute(routeInfo, totalTime, routeType))
                 }
             }
 
@@ -275,8 +273,8 @@ class MainActivity : AppCompatActivity() {
                         val station = routes.getJSONObject(i)
                         val stationName = station.getString("station")
                         val endBus = station.getString("end_bus")
-                        val startRouteType = station.getString("start_route_type") // Added startRouteType
-                        val endRouteType = station.getString("end_route_type") // Added endRouteType
+                        val startRouteType = station.getString("start_route_type")
+                        val endRouteType = station.getString("end_route_type")
                         val totalDistance = station.getDouble("total_distance")
                         val totalTime = station.getString("total_time")
 
@@ -285,7 +283,7 @@ class MainActivity : AppCompatActivity() {
                                 "환승 버스: $endBus (노선 유형: $endRouteType)\n" +
                                 "총 거리: $totalDistance km"
 
-                        busRoutesList.add(CustomBusRouteAdapter.BusRoute(stationInfo, totalTime))
+                        busRoutesList.add(CustomBusRouteAdapter.BusRoute(stationInfo, totalTime, startRouteType))
                     }
                 }
             }
