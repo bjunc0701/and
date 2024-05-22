@@ -13,7 +13,7 @@ class CustomBusRouteAdapter(context: Context, busRoutes: List<BusRoute>) :
     ArrayAdapter<CustomBusRouteAdapter.BusRoute>(context, 0, busRoutes) {
 
     // BusRoute.kt
-    data class BusRoute(val routeInfo: String, val totalTime: String, val routeType: String)
+    data class BusRoute(val routeInfo: String, val totalTime: String)
 
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
