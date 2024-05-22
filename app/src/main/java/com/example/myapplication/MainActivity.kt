@@ -257,7 +257,7 @@ class MainActivity : AppCompatActivity() {
                     val totalDistance = route.getDouble("total_distance")
                     val totalTime = route.getString("total_time")
 
-                    val routeInfo = "버스번호: $busNumber\n"
+                    val routeInfo = "버스번호: $busNumber\n"+
 //                            "노선 유형: $routeType\n" +
                             "총 거리: $totalDistance km"
 
