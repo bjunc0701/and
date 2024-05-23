@@ -30,12 +30,12 @@ class CustomBusRouteAdapter(context: Context, busRoutes: List<Any>) :
         val statusTextView = view.findViewById<TextView>(R.id.text_view_status) // 상태를 표시할 TextView
         val busRoute = getItem(position)
 
-        // 상태를 랜덤으로 선택
+        // 혼잡도 출력부분
         val statuses = listOf("쾌적", "보통", "혼잡", "매우혼잡")
         val sortedStatuses = statuses.sorted() // 혼잡도가 낮은 순으로 정렬
         val randomStatus = sortedStatuses[Random.nextInt(sortedStatuses.size)]
 
-        // 상태에 따른 글자 색상 설정
+        // 혼잡도 글자색상 관련
         val statusColor = when (randomStatus) {
             "쾌적" -> Color.parseColor("#87CEEB") // 하늘색
             "보통" -> Color.parseColor("#ADFF2F") // 연두색
@@ -83,7 +83,7 @@ class CustomBusRouteAdapter(context: Context, busRoutes: List<Any>) :
                     else -> Color.parseColor("#FFA500")
                 }
 
-                // 출발 버스와 환승 버스의 색상을 절반씩 나타내기 위한 GradientDrawable 생성
+                // 출발 버스와 환승 버스의 색상을 절반씩 나타내기 위한 GradientDrawable 생성  + 둥근 직사각형 모양 처리
                 val startDrawable = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(startColor, startColor))
                 startDrawable.cornerRadius = 80f
 
