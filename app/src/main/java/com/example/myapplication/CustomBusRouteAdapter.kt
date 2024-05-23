@@ -73,14 +73,14 @@ class CustomBusRouteAdapter(context: Context, busRoutes: List<Any>) :
                     "간선버스" -> Color.BLUE
                     "급행버스" -> Color.RED
                     "지선버스" -> Color.GREEN
-                    else -> Color.YELLOW
+                    else -> Color.parseColor("#FFA500")
                 }
 
                 val endColor = when (endRouteType) {
                     "간선버스" -> Color.BLUE
                     "급행버스" -> Color.RED
                     "지선버스" -> Color.GREEN
-                    else -> Color.YELLOW
+                    else -> Color.parseColor("#FFA500")
                 }
 
                 // 출발 버스와 환승 버스의 색상을 절반씩 나타내기 위한 GradientDrawable 생성
